@@ -1,4 +1,4 @@
-@eventId = fbd4251e-8f7c-48ce-aae9-614260da521c
+@eventId = 906c0731-72dc-4d54-bb68-55df53be98a5
 
 ###
 
@@ -51,7 +51,7 @@ POST http://localhost:3000/events/{{eventId}}/spots
 Content-Type: application/json
 
 {
-    "name": "A1"
+    "name": "A11"
 }
 
 
@@ -67,3 +67,14 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3000/events/{{eventId}}/spots
+
+
+###
+POST http://localhost:3000/events/{{eventId}}/reserve
+Content-Type: application/json
+
+{
+    "spots": ["A11"],
+    "ticket_kind": "full",
+    "email": "carlos.oe.cc@gmail.com"
+}

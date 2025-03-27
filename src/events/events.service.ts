@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -53,52 +54,57 @@ export class EventsService {
         },
       },
     });
-
     if (spots.length !== dto.spots.length) {
-      const foundSpots = spots.map((spot) => spot.name);
-      const notFoundSpots = dto.spots.filter(
-        (spot) => !foundSpots.includes(spot),
+      const foundSpotsName = spots.map((spot) => spot.name);
+      const notFoundSpotsName = dto.spots.filter(
+        (spotName) => !foundSpotsName.includes(spotName),
       );
-      throw new Error(`Spots not found: ${notFoundSpots.join(', ')}`);
+      throw new Error(`Spots ${notFoundSpotsName.join(', ')} not found`);
     }
 
     try {
-      await this.prismaService.$transaction(async (prisma) => {
-        await prisma.reservationHistory.createMany({
-          data: spots.map((spot) => ({
-            spotId: spot.id,
-            ticketKind: dto.ticket_kind,
-            email: dto.email,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            status: TicketStatus.RESERVED,
-          })),
-        });
+      const tickets = await this.prismaService.$transaction(
+        async (prisma) => {
+          await prisma.reservationHistory.createMany({
+            data: spots.map((spot) => ({
+              spotId: spot.id,
+              ticketKind: dto.ticket_kind,
+              email: dto.email,
+              status: TicketStatus.RESERVED,
+            })),
+          });
 
-        await prisma.reservationHistory.updateMany({
-          where: {
-            id: {
-              in: spots.map((spot) => spot.id),
-            },
-          },
-          data: {
-            status: SpotStatus.RESERVED,
-          },
-        });
-
-        const tickets = await Promise.all(
-          spots.map((spot) =>
-            prisma.ticket.create({
-              data: {
-                spotId: spot.id,
-                ticketKind: dto.ticket_kind,
-                email: dto.email,
+          await prisma.spot.updateMany({
+            where: {
+              id: {
+                in: spots.map((spot) => spot.id),
               },
-            }),
-          ),
-        );
+            },
+            data: {
+              status: SpotStatus.RESERVED,
+            },
+          });
 
-        return tickets;
-      });
+          const tickets = await Promise.all(
+            spots.map((spot) =>
+              prisma.ticket.create({
+                data: {
+                  spotId: spot.id,
+                  ticketKind: dto.ticket_kind,
+                  email: dto.email,
+                },
+                include: {
+                  Spot: true,
+                },
+              }),
+            ),
+          );
+
+          return tickets;
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted },
+      );
+      return tickets;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         switch (e.code) {
