@@ -1,0 +1,69 @@
+@eventId = de4f5ccb-7ec6-4186-891d-6c3037ce0511
+
+###
+
+GET http://localhost:3000/events
+
+###
+
+GET http://localhost:3000/events/{{eventId}}
+
+###
+# @name create_event
+POST http://localhost:3000/events
+Content-Type: application/json
+
+{
+    "name": "My Event",
+    "description": "This is a really nice event",
+    "date": "2022-01-01T00:00:00",
+    "price": 100.0
+}
+
+
+###
+
+PATCH http://localhost:3000/events/{{eventId}}
+Content-Type: application/json
+
+{
+    "name": "My Event renamed",
+    "description": "This is a really nice event",
+    "date": "2022-01-01T00:00:00",
+    "price": 100.0
+}
+
+###
+
+DELETE http://localhost:3000/events/{{eventId}}
+
+###
+
+GET http://localhost:3000/events/{{eventId}}
+
+###
+
+GET http://localhost:3000/events/{{eventId}}/spots
+
+###
+# @name create_event
+POST http://localhost:3000/events/{{eventId}}/spots
+Content-Type: application/json
+
+{
+    "name": "A5"
+}
+
+
+###
+
+PATCH http://localhost:3000/events/{{eventId}}/spots
+Content-Type: application/json
+
+{
+    "name": "B1"
+}
+
+###
+
+DELETE http://localhost:3000/events/{{eventId}}/spots
