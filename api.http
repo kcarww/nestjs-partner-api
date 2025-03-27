@@ -1,4 +1,4 @@
-@eventId = de4f5ccb-7ec6-4186-891d-6c3037ce0511
+@eventId = fbd4251e-8f7c-48ce-aae9-614260da521c
 
 ###
 
@@ -51,7 +51,7 @@ POST http://localhost:3000/events/{{eventId}}/spots
 Content-Type: application/json
 
 {
-    "name": "A5"
+    "name": "A1"
 }
 
 
