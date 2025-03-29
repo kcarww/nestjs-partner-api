@@ -1,4 +1,4 @@
-@eventId = 906c0731-72dc-4d54-bb68-55df53be98a5
+@eventId = 039dbea3-a1e1-4c48-a82a-f7c5fbe13a82
 
 ###
 
@@ -51,7 +51,7 @@ POST http://localhost:3000/events/{{eventId}}/spots
 Content-Type: application/json
 
 {
-    "name": "A11"
+    "name": "A4"
 }
 
 
@@ -59,9 +59,10 @@ Content-Type: application/json
 
 PATCH http://localhost:3000/events/{{eventId}}/spots
 Content-Type: application/json
+X-Api-Token: 123
 
 {
-    "name": "B1"
+    "name": "A1"
 }
 
 ###
@@ -72,9 +73,10 @@ DELETE http://localhost:3000/events/{{eventId}}/spots
 ###
 POST http://localhost:3000/events/{{eventId}}/reserve
 Content-Type: application/json
+X-Api-Token: 123
 
 {
-    "spots": ["A11"],
+    "spots": ["A4"],
     "ticket_kind": "full",
     "email": "carlos.oe.cc@gmail.com"
 }
